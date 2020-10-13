@@ -37,8 +37,6 @@ type State = {
   scrollTop: number,
 };
 
-const emptyObject = {};
-
 /**
  * Specifies the number of miliseconds during which to disable pointer events while a scroll is in progress.
  * This improves performance and makes scrolling smoother.
@@ -76,13 +74,13 @@ export const DEFAULT_SCROLLING_RESET_TIME_INTERVAL = 150;
 class Masonry extends React.PureComponent<Props, State> {
   static defaultProps = {
     autoHeight: false,
-    keyMapper: identity,
-    onCellsRendered: noop,
-    onScroll: noop,
+    keyMapper: (value) => value,
+    onCellsRendered: () => {},
+    onScroll: () => {},
     overscanByPixels: 20,
     role: 'grid',
     scrollingResetTimeInterval: DEFAULT_SCROLLING_RESET_TIME_INTERVAL,
-    style: emptyObject,
+    style: {},
     tabIndex: 0,
     rowDirection: 'ltr',
   };
@@ -221,7 +219,7 @@ class Masonry extends React.PureComponent<Props, State> {
             parent: this,
             style: {
               height: cellMeasurerCache.getHeight(index),
-              [rowDirection === 'ltr' ? 'left' : 'right']: left,
+              [rowDirection === 'rtr' ? 'right' : 'left']: right,
               position: 'absolute',
               top,
               width: cellMeasurerCache.getWidth(index),
@@ -404,11 +402,11 @@ class Masonry extends React.PureComponent<Props, State> {
     }
   }
 
-  _setScrollingContainerRef = ref => {
+  _setScrollingContainerRef = (ref) => {
     this._scrollingContainer = ref;
   };
 
-  _onScroll = event => {
+  _onScroll = (event) => {
     const {height} = this.props;
 
     const eventScrollTop = event.currentTarget.scrollTop;
@@ -443,12 +441,6 @@ class Masonry extends React.PureComponent<Props, State> {
     }
   };
 }
-
-function identity(value) {
-  return value;
-}
-
-function noop() {}
 
 type KeyMapper = (index: number) => mixed;
 
